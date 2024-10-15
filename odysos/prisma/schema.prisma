@@ -1,0 +1,73 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+
+model Component {
+  id           Int      @id @default(autoincrement())
+  
+  /// Name der Komponente (z. B. Button, KanbanBoard)
+  name         String
+  
+  /// Typ der Komponente (BUTTON, KANBANBOARD etc.)
+  type         ComponentType
+  
+  /// Code der Komponente (z. B. HTML, CSS, JavaScript)
+  code         String
+  
+  /// Dokumentation zur Komponente (z. B. Nutzungshinweise, API-Referenz)
+  documentation String
+  
+  /// Beschreibung der Komponente (z. B. Zweck oder Funktion)
+  description  String?
+
+  /// Gibt an, ob die Komponente öffentlich ist oder privat (Standard: privat).
+  isPublic     Boolean     @default(false)
+
+  /// ID des Moduls, zu dem die Komponente gehört
+  moduleId     Int
+  module       Module   @relation(fields: [moduleId], references: [id])
+  
+  /// Zeitpunkt, zu dem die Komponente erstellt wurde
+  createdAt    DateTime @default(now())
+
+  // Index für schnellere Suche nach Komponenten-Typen und Public/Private-Status
+  @@index([type, isPublic])
+}
+
+model Module {
+  id           Int      @id @default(autoincrement())
+  name         String
+  content      String?
+  isPublic     Boolean  @default(false)
+  projectId    Int
+  project      Project  @relation(fields: [projectId], references: [id])
+  components   Component[] 
+  createdAt    DateTime @default(now())
+}
+
+
+model Project {
+  id           Int       @id @default(autoincrement())
+  name         String
+  description  String?
+  isPublic     Boolean   @default(false)
+  createdAt    DateTime  @default(now())
+
+  // Beziehung zu Modulen
+  modules      Module[]  // Ein Projekt kann mehrere Module haben
+}
+enum ComponentType {
+  BUTTON
+  KANBANBOARD
+  CARD
+  SIDEBAR
+  FOOTER
+  HEADER
+  // Weitere Komponenten, die du brauchst
+}
