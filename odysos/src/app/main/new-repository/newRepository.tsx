@@ -4,40 +4,41 @@ import { useState } from 'react';
 export default function NewRepository() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [message, setMessage] = useState('');
+  // const [message, setMessage] = useState('');
 
   // Korrekte Typisierung des Events als FormEvent
-  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setMessage('');
+  // const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+  //   e.preventDefault();
+  //   setMessage('');
 
-    try {
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
+  //   try {
+  //     const response = await fetch('/api/auth/login', {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify({ email, password }),
+  //     });
 
-      const data = await response.json();
+  //     const data = await response.json();
 
-      if (response.ok) {
-        setMessage('Login erfolgreich');
-      } else {
-        setMessage(data.message || 'Fehler beim Login');
-      }
-    } catch (error) {
-      setMessage('Fehler beim Login');
-    }
-  };
+  //     if (response.ok) {
+  //       setMessage('Login erfolgreich');
+  //     } else {
+  //       setMessage(data.message || 'Fehler beim Login');
+  //     }
+  //   } catch (error) {
+  //     setMessage('Fehler beim Login');
+  //   }
+  // };
 
   return (
     <div className="container mx-auto p-8">
       <h1 className="text-3xl font-bold text-center mb-6">
         Willkommen auf der newRepository!
       </h1>
-
+      <input value={email} onChange={(e) => setEmail(e.target.value)} />
+      <input value={password} onChange={(e) => setPassword(e.target.value)} />
       {/* Input-Feld für den Projektnamen */}
       <div className="mb-6">
         <label

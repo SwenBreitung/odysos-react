@@ -124,23 +124,22 @@
 //         </>
 //     );
 // }
-
-import React from 'react';
+"use client";
+import React, { useEffect, useState } from 'react';
 import layoutService from './../../utils/layoutServies';
-import { useEffect, useState } from 'react';
 
 export default function Sidebar() {
-
+    const service = layoutService(); 
     const [isHoverState, setIsHoverState] = useState(false); // Steuert den Button-Hover
-    const [isSidebarOpen, setIsSidebarOpen] = useState(layoutService.getSidebarState());
+    const [isSidebarOpen, setIsSidebarOpen] = useState(service.getSidebarState()); // Initialisiere den Zustand aus layoutService
     const [isManualToggle, setIsManualToggle] = useState(false); // Steuert das manuelle Umschalten der Sidebar
-
+    
     const toggleSidebar = () => {
-        const sidebar: HTMLElement | null = document.getElementById('sidebar');
+        const sidebar = document.getElementById('sidebar');
         setIsManualToggle(true); // Manuelles Umschalten aktivieren
-
+       
         if (sidebar) {
-            // Überprüfen, ob die Sidebar existiert, bevor darauf zugegriffen wird
+            // Sidebar-Visualisierung umschalten
             if (sidebar.classList.contains('w-16')) {
                 sidebar.classList.remove('w-16');
                 sidebar.classList.add('w-64');
@@ -150,47 +149,48 @@ export default function Sidebar() {
                 sidebar.classList.add('w-16');
                 setIsHoverState(true);
             }
+
+            // Zustand auch im layoutService aktualisieren
+            service.toggleSidebar();
         } else {
             console.error('Sidebar element not found');
         }
     };
 
     useEffect(() => {
-        layoutService.subscribe(setIsSidebarOpen);
+        const service = layoutService(); 
+        // Abonniere den Sidebar-Zustand aus layoutService
+        const handleSidebarStateChange = (state: boolean) => {
+            setIsSidebarOpen(state);
+        };
+      
+        service.subscribe(handleSidebarStateChange);
+
         return () => {
-            layoutService.unsubscribe(setIsSidebarOpen);
+            // Cleanup bei Komponentenunmount
+            service.unsubscribe(handleSidebarStateChange);
         };
     }, []);
 
     return (
-        <>
         <aside
             id="sidebar"
-            className={`${isSidebarOpen ? 'hidden' : 'flex'} group w-16 p-4 text-white h-screen bg-gray-800 transition-all duration-300 ease-in-out`}
+            className={`${isSidebarOpen ? 'flex' : 'hidden'} group w-16 p-4 text-white h-screen bg-gray-800 transition-all duration-300 ease-in-out`}
             onMouseEnter={() => {
                 const sidebar = document.getElementById('sidebar');
-                if (sidebar) { // Überprüfe, ob sidebar nicht null ist
-                    if (!isManualToggle && sidebar.classList.contains('w-16')) { // Nur umschalten, wenn nicht manuell
-                        sidebar.classList.remove('w-16');
-                        sidebar.classList.add('w-64');
-                    }
-                } else {
-                    console.error('Sidebar element not found');
+                if (sidebar && !isManualToggle && sidebar.classList.contains('w-16')) {
+                    sidebar.classList.remove('w-16');
+                    sidebar.classList.add('w-64');
                 }
             }}
             onMouseLeave={() => {
                 const sidebar = document.getElementById('sidebar');
-                if (sidebar) { // Überprüfe, ob sidebar existiert
-                    if (!isManualToggle && sidebar.classList.contains('w-64')) { // Nur zurückschalten, wenn nicht manuell
-                        sidebar.classList.remove('w-64');
-                        sidebar.classList.add('w-16');
-                    }
-                } else {
-                    console.error('Sidebar element not found');
+                if (sidebar && !isManualToggle && sidebar.classList.contains('w-64')) {
+                    sidebar.classList.remove('w-64');
+                    sidebar.classList.add('w-16');
                 }
             }}
         >
-
             <ul>
                 <div className="flex">
                     <button
@@ -202,38 +202,14 @@ export default function Sidebar() {
                         <span className={`${isHoverState ? 'translate-x-8' : 'translate-x-1'} inline-block w-6 h-6 transform bg-white rounded-full transition-transform duration-300`} />
                     </button>
                 </div>
+                {/* Deine Liste von Links */}
                 <li className="mb-4">
                     <a href="/" className={`ml-2 ${isHoverState ? 'hidden' : 'block'} group-hover:block transition-all duration-300`}>
                         Meine Komponenten
                     </a>
                 </li>
-                <li className="mb-4">
-                    <a href="/" className={`ml-2 ${isHoverState ? 'hidden' : 'block'} group-hover:block transition-all duration-300`}>
-                        Home
-                    </a>
-                </li>
-                <li className="mb-4">
-                    <a href="/" className={`ml-2 ${isHoverState ? 'hidden' : 'block'} group-hover:block transition-all duration-300`}>
-                        Eigene Projekte
-                    </a>
-                </li>
-                <li className="mb-4">
-                    <a href="/" className={`ml-2 ${isHoverState ? 'hidden' : 'block'} group-hover:block transition-all duration-300`}>
-                        Kontakt
-                    </a>
-                </li>
-                <li className="mb-4">
-                    <a href="/" className={`ml-2 ${isHoverState ? 'hidden' : 'block'} group-hover:block transition-all duration-300`}>
-                        Projekttabelle
-                    </a>
-                </li>
-                <li className="mb-4">
-                    <a href="/" className={`ml-2 ${isHoverState ? 'hidden' : 'block'} group-hover:block transition-all duration-300`}>
-                        Meine Komponenten
-                    </a>
-                </li>
+                {/* Weitere Links */}
             </ul>
         </aside>
-        </>
     );
 }

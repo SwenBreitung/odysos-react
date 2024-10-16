@@ -1,3 +1,4 @@
+"use client";
 import { useState } from 'react';
 import { login } from './../../utils/backend'; // `refreshAccessToken` entfernen
 
@@ -16,7 +17,7 @@ export default function Login() {
   };
 
   
-  
+
   // Typisiere den Event-Handler
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -32,10 +33,13 @@ export default function Login() {
 
       setMessage('Login erfolgreich');
       // Optional: Weiterleitung zur Startseite oder andere Aktionen
-    } catch (error: any) {
-      // Fehlerbehandlung
-      setMessage(error.message || 'Fehler beim Login');
-    }
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setMessage(error.message || 'Fehler beim Login');
+      } else {
+        setMessage('Unbekannter Fehler beim Login');
+      }
+   }
   };
 
   return (

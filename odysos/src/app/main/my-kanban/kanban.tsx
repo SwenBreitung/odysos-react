@@ -104,7 +104,8 @@ const Column = ({ column, tasks }: { column: Column; tasks: Task[] }) => {
 };
 
 export default function SimpleKanbanBoard() {
-  const [state, setState] = useState<State>(initialData);
+   //const [state, setState] = useState<State>(initialData);
+  const [state] = useState<State>(initialData);
 
   return (
     <DndProvider backend={HTML5Backend}>

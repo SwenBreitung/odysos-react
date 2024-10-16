@@ -1,5 +1,6 @@
+"use client";
 import { useState } from 'react';
-import bcrypt from 'bcryptjs';
+// import bcrypt from 'bcryptjs';
 
 
 export default function RegisterPage() {
@@ -30,6 +31,7 @@ export default function RegisterPage() {
         setMessage(data.message || 'Fehler bei der Registrierung');
       }
     } catch (error) {
+      console.log(error)
       setMessage('Fehler bei der Registrierung');
     }
   };
