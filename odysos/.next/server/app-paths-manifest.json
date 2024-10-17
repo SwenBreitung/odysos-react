@@ -1,4 +1,4 @@
 {
-  "/page": "app/page.js",
-  "/favicon.ico/route": "app/favicon.ico/route.js"
+  "/main/kanban/page": "app/main/kanban/page.js",
+  "/main/start-page/page": "app/main/start-page/page.js"
 }
